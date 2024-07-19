@@ -27,8 +27,6 @@ module.exports = function ( app ) {
 
             }
 
-              
-
         })
 
 
@@ -48,13 +46,21 @@ module.exports = function ( app ) {
 
             } 
 
+            if (resultado.length === 0) {
+
+                return res.json({ message: 'El usuario no existe'});
+
+            }
+
             if (resultado.length > 0){
+                
+                let user = resultado[0];
 
-                res.json({ valido: true })
+                let token = jwt.sign({user}, clave.secret, {expiresIn: 86400});
 
-            } else {
-
-                res.json({ valido: false })
+                db.query(`UPDATE users SET token = '${token}' where nombre = '${nombre}' AND contraseña = '${pass}'`);
+                
+                res.json({ valido: true, token })
 
             }
 
