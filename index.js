@@ -11,5 +11,6 @@ app.listen(cfg.API_PUERTO, () =>{
     console.log(`API escuchando en el puerto ${cfg.API_PUERTO}`);
 
     require('./routes/Users')( app );
+    require('./routes/Products')( app );
 
 })

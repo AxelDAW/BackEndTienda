@@ -56,7 +56,7 @@ module.exports = function ( app ) {
                 
                 let user = resultado[0];
 
-                let token = jwt.sign({user}, clave.secret, {expiresIn: 86400});
+                let token = jwt.sign({user}, clave.secret, {expiresIn: 1000});
 
                 db.query(`UPDATE users SET token = '${token}' where nombre = '${nombre}' AND contraseña = '${pass}'`);
                 
@@ -67,5 +67,7 @@ module.exports = function ( app ) {
         })
 
     })
+
+    app.get('/infousu/:id')
 
 }
