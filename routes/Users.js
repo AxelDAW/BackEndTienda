@@ -55,12 +55,13 @@ module.exports = function ( app ) {
             if (resultado.length > 0){
                 
                 let user = resultado[0];
+                let idUser = user.id;
 
-                let token = jwt.sign({user}, clave.secret, {expiresIn: 1000});
+                let token = jwt.sign({ idUser }, clave.secret, {expiresIn: 1000});
 
-                db.query(`UPDATE users SET token = '${token}' where nombre = '${nombre}' AND contraseña = '${pass}'`);
-                
-                res.json({ valido: true, token })
+                db.query(`UPDATE users SET token = '${token}' where id = ${user.id}`);
+
+                res.json({ valido: true, token: token, id: idUser })
 
             }
 
@@ -68,6 +69,62 @@ module.exports = function ( app ) {
 
     })
 
-    app.get('/infousu/:id')
+    app.delete('/perfilmenu/borrar/:id', (req, res) => {
+        
+        db.query(`DELETE FROM users WHERE id = ` + req.params.id, (err, results) => {
+
+            if (err) {
+
+                console.error(err);
+                res.json("Error en la base de datos");
+
+            } else {
+
+                res.json({msg: 'Se ha borrado correctamente.'})
+
+            }
+
+        })
+
+    })
+
+    app.post('/perfil/changePass', (req, res) => {
+
+        let {contraseña, id} = req.body;
+        
+        db.query(`update users set contraseña = '${contraseña}' where id = ${id}`, (err, results) => {
+
+            if (err) {
+
+                console.error(err);
+                res.json("Error en la base de datos.")
+
+            } else {
+
+                res.json({msg: "Se ha cambiado correctamente."})
+
+            }
+
+        })
+
+    })
+
+    app.get('/perfil/infoperfil/:id', (req, res) => {
+
+        db.query('Select * from users where id = ' + req.params.id, (err, results) => {
+
+            if (err) {
+
+                console.error(err);
+                res.json('Error en la base de datos.')
+
+            } else {
+
+                res.json( results)
+            }
+
+        })
+
+    })
 
 }
