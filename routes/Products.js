@@ -64,9 +64,45 @@ module.exports = function ( app ){
 
     })
 
-    app.get('/categorias', (req, res) => {
+    app.get('/categorias/:id', (req, res) => {
 
-        db.query()
+        db.query('Select * from productos where categoria = ' + req.params.id, (err, results) => {
+
+            if (err) {
+
+                console.error(err);
+                res.json({msg: "Error en el servidor"});
+
+            } else {
+
+                res.json(results)
+
+            }
+
+        })
+
+    })
+
+    app.post('/perfil/modprod', (req, res) => {
+
+        let {id, nombre, desc, precio, disponibilidad, categoria, imagen} = req.body;
+
+        db.query(`update productos set nombre = '${nombre}', descripcion = '${desc}', 
+            precio = '${precio??0}', disponibilidad = ${disponibilidad}, categoria = ${categoria}, 
+            imagen = '${imagen}' where id = ${id}`, (err, results) => {
+
+                if (err) {
+
+                    console.error(err);
+                    res.json({msg: "Error en el servidor"});
+
+                } else {
+
+                    res.json("Modificado correctamente.")
+
+                }
+
+            })
 
     })
 
